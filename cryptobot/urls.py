@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.views import SpectacularAPIView ,SpectacularRedocView, SpectacularSwaggerView
-
-
+from .views import index
 
 urlpatterns = [
+    path("", index, name='index'),
+
     path("admin/", admin.site.urls),
     path('alerts/', include('alerts.urls')),
  
