@@ -1,8 +1,10 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Alert
-from .serializers import AlertSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import AlertSerializer, UserRegistrationSerializer
 from django.core.cache import cache
 import smtplib
 from email.mime.text import MIMEText
@@ -57,6 +59,21 @@ class ListAlertView(generics.ListAPIView):
     cache.set(cache_key, response_data, timeout=60)
     return Response(response_data)
   
+
+class UserregistrationView(generics.CreateAPIView):
+  serializer_class = UserRegistrationSerializer
+
+class LogoutView(APIView):
+  permission_classes = [IsAuthenticated]
+  
+  def post(self, request):
+    try:
+      refresh_token = request.data['refresh']
+      token = RefreshToken(refresh_token)
+      token.blacklist()
+      return Response(status=status.HTTP_205_RESET_CONTENT)
+    except Exception as e:
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # SEND EMAIL
 def send_mail(to_email, cryptocurrency, target_price):

@@ -18,4 +18,3 @@ class Alert(models.Model):
   def __str__(self) -> str:
     return f"{self.cryptocurrency} at {self.target_price} ({self.status}) created at {self.created_at}"
   
-  
